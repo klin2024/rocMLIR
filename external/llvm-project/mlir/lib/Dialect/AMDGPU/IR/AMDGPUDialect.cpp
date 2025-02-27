@@ -325,16 +325,14 @@ LogicalResult MFMAOp::verify() {
   }
 
   Type sourceBType = getSourceB().getType();
-  if (sourceElem.isFloat8E5M2FNUZ() || sourceElem.isFloat8E4M3FNUZ() ||
-      sourceElem.isFloat8E5M2() || sourceElem.isFloat8E4M3FN()) {
+  if (isa<Float8E5M2FNUZType, Float8E4M3FNUZType, Float8E5M2Type, Float8E4M3FNType>(sourceElem)) {
     int64_t sourceBLen = 1;
     Type sourceBElem = sourceBType;
     if (auto sourceBVector = llvm::dyn_cast<VectorType>(sourceBType)) {
       sourceBLen = sourceBVector.getNumElements();
       sourceBElem = sourceBVector.getElementType();
     }
-    if (!sourceBElem.isFloat8E5M2FNUZ() && !sourceBElem.isFloat8E4M3FNUZ() &&
-        !sourceBElem.isFloat8E5M2() && !sourceBElem.isFloat8E4M3FN())
+    if (!isa<Float8E5M2FNUZType, Float8E4M3FNUZType, Float8E5M2Type, Float8E4M3FNType>(sourceBElem))
       return emitOpError("expected both source operands to have f8 elements");
     if (sourceLen != sourceBLen)
       return emitOpError(
