@@ -180,7 +180,7 @@ void mlir::amdgpu::populateAmdgpuEmulateAtomicsPatterns(
   }
   // gfx9 has no to a very limited support for floating-point min and max.
   if (chipset.majorVersion == 9) {
-    if (chipset >= Chipset(9, 0, 0xa) && chipset != Chipset(9, 4, 1)) {
+    if (chipset >= Chipset(9, 0, 0xa)) {
       // gfx90a supports f64 max (and min, but we don't have a min wrapper right
       // now) but all other types need to be emulated.
       target.addDynamicallyLegalOp<RawBufferAtomicFmaxOp>(
@@ -190,23 +190,13 @@ void mlir::amdgpu::populateAmdgpuEmulateAtomicsPatterns(
     } else {
       target.addIllegalOp<RawBufferAtomicFmaxOp>();
     }
-    if (chipset == Chipset(9, 4, 1)) {
-      // gfx941 requires non-CAS atomics to be implemented with CAS loops.
-      // The workaround here mirrors HIP and OpenMP.
-      target.addIllegalOp<RawBufferAtomicFaddOp, RawBufferAtomicFmaxOp,
-                          RawBufferAtomicSmaxOp, RawBufferAtomicUminOp>();
-    } else if (chipset.minorVersion <= 4) {
+    // gfx950 has bf16 atomics
+    if (chipset < Chipset(9, 5, 0)) {
       target.addDynamicallyLegalOp<RawBufferAtomicFaddOp>(
-          [](RawBufferAtomicFaddOp op) -> bool {
-            Type elemType = getElementTypeOrSelf(op.getValue().getType());
-            return isa<Float32Type, Float16Type>(elemType);
-          });
-    } else {
-      target.addDynamicallyLegalOp<RawBufferAtomicFaddOp>(
-          [](RawBufferAtomicFaddOp op) -> bool {
-            Type elemType = getElementTypeOrSelf(op.getValue().getType());
-            return isa<Float32Type, Float16Type, BFloat16Type>(elemType);
-          });
+        [](RawBufferAtomicFaddOp op) -> bool {
+          Type elemType = getElementTypeOrSelf(op.getValue().getType());
+          return !isa<BFloat16Type>(elemType);
+        });
     }
   }
   patterns.add<
