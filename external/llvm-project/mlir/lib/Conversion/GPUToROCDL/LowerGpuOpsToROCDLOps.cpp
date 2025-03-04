@@ -213,7 +213,8 @@ struct LowerGpuOpsToROCDLOpsPass final
   LowerGpuOpsToROCDLOpsPass() = default;
   LowerGpuOpsToROCDLOpsPass(const std::string &chipset, unsigned indexBitwidth,
                             bool useBarePtrCallConv,
-                            gpu::amd::Runtime runtime) {
+                            gpu::amd::Runtime runtime,
+                            std::optional<llvm::SmallDenseSet<StringRef>> allowedDialects) {
     if (this->chipset.getNumOccurrences() == 0)
       this->chipset = chipset;
     if (this->indexBitwidth.getNumOccurrences() == 0)
@@ -222,6 +223,11 @@ struct LowerGpuOpsToROCDLOpsPass final
       this->useBarePtrCallConv = useBarePtrCallConv;
     if (this->runtime.getNumOccurrences() == 0)
       this->runtime = runtime;
+    if(this->allowedDialects.getNumOccurrences() == 0 && allowedDialects.has_value()) {
+      for (auto &str : allowedDialects.value()) {
+        this->allowedDialects.push_back(str.str());
+      }
+    }
   }
 
   void getDependentDialects(DialectRegistry &registry) const override {
@@ -327,19 +333,19 @@ struct LowerGpuOpsToROCDLOpsPass final
                                                      llvmPatterns);
     }
     // TODO: remove hardcoded passes
-    mlir::arith::populateArithToLLVMConversionPatterns(converter, llvmPatterns);
+    // mlir::arith::populateArithToLLVMConversionPatterns(converter, llvmPatterns);
     // TODO: ends here
     populateAMDGPUToROCDLConversionPatterns(converter, llvmPatterns,
                                             *maybeChipset);
     // TODO: remove hardcoded passes
     // related PR: https://github.com/llvm/llvm-project/pull/124439
-    populateVectorToLLVMConversionPatterns(converter, llvmPatterns);
+    // populateVectorToLLVMConversionPatterns(converter, llvmPatterns);
     mlir::vector::populateVectorInsertExtractStridedSliceTransforms(llvmPatterns);
-    populateMathToLLVMConversionPatterns(converter, llvmPatterns);
-    cf::populateControlFlowToLLVMConversionPatterns(converter, llvmPatterns);
-    cf::populateAssertToLLVMConversionPattern(converter, llvmPatterns);
-    populateFuncToLLVMConversionPatterns(converter, llvmPatterns);
-    populateFinalizeMemRefToLLVMConversionPatterns(converter, llvmPatterns);
+    // populateMathToLLVMConversionPatterns(converter, llvmPatterns);
+    // cf::populateControlFlowToLLVMConversionPatterns(converter, llvmPatterns);
+    // cf::populateAssertToLLVMConversionPattern(converter, llvmPatterns);
+    // populateFuncToLLVMConversionPatterns(converter, llvmPatterns);
+    // populateFinalizeMemRefToLLVMConversionPatterns(converter, llvmPatterns);
     // TODO: ends here
     populateGpuToROCDLConversionPatterns(converter, llvmPatterns, runtime);
     configureGpuToROCDLConversionLegality(target);
@@ -436,7 +442,8 @@ std::unique_ptr<OperationPass<gpu::GPUModuleOp>>
 mlir::createLowerGpuOpsToROCDLOpsPass(const std::string &chipset,
                                       unsigned indexBitwidth,
                                       bool useBarePtrCallConv,
-                                      gpu::amd::Runtime runtime) {
+                                      gpu::amd::Runtime runtime,
+                                      const std::optional<llvm::SmallDenseSet<StringRef>>& allowedDialects) {
   return std::make_unique<LowerGpuOpsToROCDLOpsPass>(
-      chipset, indexBitwidth, useBarePtrCallConv, runtime);
+      chipset, indexBitwidth, useBarePtrCallConv, runtime, allowedDialects);
 }
