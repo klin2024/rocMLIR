@@ -114,7 +114,8 @@ static benchmark::DataType getDataType(Type inputType) {
     return benchmark::DataType::BF16;
   } else if (inputType.isInteger(8)) {
     return benchmark::DataType::I8;
-  } else if (isa<FloatType>(inputType) && inputType.getIntOrFloatBitWidth() == 8) {
+  } else if (isa<Float8E4M3FNUZType, Float8E4M3FNType, Float8E5M2Type,
+                 Float8E5M2FNUZType>(inputType)) {
     return benchmark::DataType::F8;
   } else {
     llvm_unreachable("Kernels only accept ints or floats");
