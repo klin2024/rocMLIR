@@ -1197,7 +1197,6 @@ struct GlobalLoadRewritePattern : public OpRewritePattern<GlobalLoadOp> {
       source = zeroDMemrefAsOneD(b, source);
       coords.push_back(b.createOrFold<ConstantIndexOp>(loc, 0));
     }
-
     // We need to copy these params here, because the next if might replace
     // "op". So, we can't safely access it after that.
     // TODO: refactor this code
@@ -1265,9 +1264,9 @@ struct GlobalLoadRewritePattern : public OpRewritePattern<GlobalLoadOp> {
         loaded = b.create<vector::LoadOp>(loc, loadedType, source, coords);
       else
         loaded = b.create<memref::LoadOp>(loc, loadedType, source, coords);
+
       loaded = selectDataIf4b(loc, b, sourceCoords, srcType, originalLoadedType,
                               loaded);
-
       if (emitOobChecks)
         b.create<scf::YieldOp>(loc, loaded);
       else
