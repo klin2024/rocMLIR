@@ -37,6 +37,7 @@ DATA_TYPES_ATTENTION = ['f32', 'f16', 'bf16']
 OUTPUT_DATA_TYPES_MAP = {'f32': 'f32', 'f16': 'f16', 'bf16': 'bf16', 'i8': 'i32', 'fp8':'f32',
                          'fp8_fp8': 'f32', 'fp8_bf8': 'f32', 'bf8_fp8': 'f32',
                          'bf8_bf8': 'f32'}
+MLIR_N_REPEATS = 5
 
 # Compiled regexp object used for extracting elapsed time from MIOpenDriver's output
 ELAPSED_TIME_RE = re.compile(r"Elapsed: ([0-9\.]*) ms")
@@ -367,7 +368,7 @@ class ConvConfiguration(PerfConfiguration):
                            '--padding_h', str(self.paddingH),
                            '--padding_w', str(self.paddingW),
                            '--groupsize', str(self.group),
-                           '--kernel-repeats', str(self.MLIR_N_REPEATS),
+                           '--kernel-repeats', str(MLIR_N_REPEATS),
                            f"--perf_config={self.perfConfig}"])
         result += ' '
         if rocmlir_gen_flags != '':
@@ -496,7 +497,6 @@ class ConvConfiguration(PerfConfiguration):
         if direction not in {"fwd", "bwd", "wrw"}:
             raise ValueError(f"Invalid direction: {direction}")
 
-        self.MLIR_N_REPEATS = 5
         self.dataType = dtype
         self.direction = direction
 
@@ -666,7 +666,7 @@ class GemmConfiguration(PerfConfiguration):
                            '-n', str(self.n),
                            f"-transA={self.transA}",
                            f"-transB={self.transB}",
-                           '--kernel-repeats', str(self.MLIR_N_REPEATS),
+                           '--kernel-repeats', str(MLIR_N_REPEATS),
                            f"--perf_config={self.perfConfig}"])
 
         result += ' '
@@ -723,7 +723,6 @@ class GemmConfiguration(PerfConfiguration):
                  transA: bool, transB: bool, arch: str, numCU: int, perf_config: str = ''):
         if dtype not in {"f16", "f32", "bf16", "i8", "fp8"}:
             raise ValueError(f"Invalid datatype: {dtype}")
-        self.MLIR_N_REPEATS = 5
         self.dataType = dtype
         self.outDataType = outDataType
         self.g = g
@@ -759,7 +758,6 @@ class AttentionConfiguration(PerfConfiguration):
         self.arch = arch
         self.chip = GFX_CHIP_RE.search(arch).group(0)
         self.numCU = numCU
-        self.MLIR_N_REPEATS = 5
         self.perfConfig = perf_config
 
     def computeTFlops(self, ns, only_matmul_flops=True):
@@ -826,9 +824,9 @@ class AttentionConfiguration(PerfConfiguration):
                            f"-with-attn-scale={self.with_attn_scale}",
                            f"-transQ={self.transQ}",
                            f"-transK={self.transK}",
-                           f"-transQ={self.transV}",
-                           f"-transK={self.transO}",
-                           '--kernel-repeats', str(self.MLIR_N_REPEATS),
+                           f"-transV={self.transV}",
+                           f"-transO={self.transO}",
+                           '--kernel-repeats', str(MLIR_N_REPEATS),
                            f"--perf_config={self.perfConfig}"])
         result += ' '
         if rocmlir_gen_flags != '':
