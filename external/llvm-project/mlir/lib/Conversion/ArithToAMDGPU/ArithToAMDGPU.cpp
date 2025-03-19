@@ -46,10 +46,6 @@ struct ExtFOnFloat8RewritePattern final : OpRewritePattern<arith::ExtFOp> {
   ExtFOnFloat8RewritePattern(MLIRContext *ctx, Chipset chipset)
       : OpRewritePattern::OpRewritePattern(ctx), chipset(chipset) {}
 
-  Chipset chipset;
-  ExtFOnFloat8RewritePattern(MLIRContext *ctx, Chipset chipset)
-      : OpRewritePattern::OpRewritePattern(ctx), chipset(chipset) {}
-
   LogicalResult matchAndRewrite(arith::ExtFOp op,
                                 PatternRewriter &rewriter) const override;
 };
