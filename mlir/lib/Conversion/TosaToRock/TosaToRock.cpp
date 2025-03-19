@@ -884,8 +884,8 @@ static bool isElementwiseOp(Operation *op) {
   // clang-format on
 }
 
-struct AttentionRewritePattern : public OpRewritePattern<tosa::MatMulOp> {
-  using OpRewritePattern<tosa::MatMulOp>::OpRewritePattern;
+struct AttentionRewritePattern : public OpRewritePattern<tosa::MatMulOp>::SplitMatchAndRewrite {
+  using SplitMatchAndRewrite::SplitMatchAndRewrite;
 
   FailureOr<Value> getValueNonReshapeOpNonBroadcast(Value val) const {
     while (val.getDefiningOp() &&
@@ -1263,7 +1263,7 @@ struct AttentionRewritePattern : public OpRewritePattern<tosa::MatMulOp> {
         getPreSoftmaxElementwiseRegion(softmaxInput, b, nullptr, vec);
 
     if (succeeded(maybeFirstMatMul)) {
-      TypedValue<TensorType> matC = maybeFirstMatMul.value().getC();
+      TypedValue<TensorType> matC = maybeFirstMatMul.value().getOutput();
       ArrayRef<int64_t> shapeC = matC.getType().getShape();
       bool isDotProduct = *(std::prev(shapeC.end(), 1)) == 1;
       isDotProduct &= *(std::prev(shapeC.end(), 2)) == 1;

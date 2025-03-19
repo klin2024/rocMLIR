@@ -124,19 +124,19 @@ void rock::buildBufferizePipeline(OpPassManager &pm,
   funcPm3.addPass(bufferization::createEmptyTensorToAllocTensorPass());
   funcPm3.addPass(createLinalgFoldUnitExtentDimsPass());
 
-  bufferization::OneShotBufferizationOptions bufOpts;
+  bufferization::OneShotBufferizePassOptions bufOpts;
   bufOpts.allowReturnAllocsFromLoops = true;
   bufOpts.bufferizeFunctionBoundaries = true;
-  bufOpts.setFunctionBoundaryTypeConversion(
-      bufferization::LayoutMapOption::IdentityLayoutMap);
-  bufOpts.unknownTypeConverterFn =
-      [](Value value, Attribute memorySpace,
-         const bufferization::BufferizationOptions &options) {
-        return bufferization::getMemRefTypeWithStaticIdentityLayout(
-            cast<TensorType>(value.getType()), memorySpace);
-      };
+  bufOpts.functionBoundaryTypeConversion = "infer-layout-map";
+  // TODO: do we need this?
+  // bufOpts.unknownTypeConverterFn =
+  //     [](Value value, Attribute memorySpace,
+  //        const bufferization::BufferizationOptions &options) {
+  //       return bufferization::getMemRefTypeWithStaticIdentityLayout(
+  //           cast<TensorType>(value.getType()), memorySpace);
+  //     };
   // bufferization::BufferizationOptions::LayoutMapOption::IdentityLayoutMap;
-  pm.addPass(createOneShotBufferizePass(bufOpts));
+  pm.addPass(bufferization::createOneShotBufferizePass(bufOpts));
 
   pm.addPass(bufferization::createBufferResultsToOutParamsPass());
 

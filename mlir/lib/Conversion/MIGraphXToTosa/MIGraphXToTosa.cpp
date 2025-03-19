@@ -638,10 +638,10 @@ LogicalResult MultiBroadcastConverter::matchAndRewrite(
   // If its a splat constant, we can broadcast it trivially
   if (tosa::ConstOp constOp =
           adaptor.getInput().getDefiningOp<tosa::ConstOp>()) {
-    if (constOp.getValueAttr().isSplat()) {
+    if (constOp.getValuesAttr().isSplat()) {
       auto outTy = RankedTensorType::get(outShape, elemType);
       auto bcastConstAttr = DenseElementsAttr::get(
-          outTy, cast<DenseElementsAttr>(constOp.getValueAttr())
+          outTy, cast<DenseElementsAttr>(constOp.getValuesAttr())
                      .getSplatValue<Attribute>());
       tosa::ConstOp newConstOp =
           rewriter.create<tosa::ConstOp>(loc, outTy, bcastConstAttr);
