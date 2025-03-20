@@ -129,7 +129,7 @@ void rock::buildBufferizePipeline(OpPassManager &pm,
   bufOpts.bufferizeFunctionBoundaries = true;
   bufOpts.functionBoundaryTypeConversion = "identity-layout-map";
   bufOpts.unknownTypeConversion = "identity-layout-map";
-  
+
   pm.addPass(bufferization::createOneShotBufferizePass(bufOpts));
   pm.addPass(bufferization::createBufferResultsToOutParamsPass());
 

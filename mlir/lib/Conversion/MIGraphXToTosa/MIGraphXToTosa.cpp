@@ -495,7 +495,8 @@ LogicalResult DotConverter<DotType>::matchAndRewrite(
   auto bZp =
       tosa::createZeroPointTensor(rewriter, loc, inB.getType(), 0).value();
   // Construct tosa.matmul.
-  auto mop = rewriter.create<tosa::MatMulOp>(loc, newOutType, inA, inB, aZp, bZp);
+  auto mop =
+      rewriter.create<tosa::MatMulOp>(loc, newOutType, inA, inB, aZp, bZp);
 
   // Convert optional attributes
   if (auto attr = (*op).template getAttrOfType<StringAttr>("perf_config"))

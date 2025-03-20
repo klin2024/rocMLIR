@@ -884,7 +884,8 @@ static bool isElementwiseOp(Operation *op) {
   // clang-format on
 }
 
-struct AttentionRewritePattern : public OpRewritePattern<tosa::MatMulOp>::SplitMatchAndRewrite {
+struct AttentionRewritePattern
+    : public OpRewritePattern<tosa::MatMulOp>::SplitMatchAndRewrite {
   using SplitMatchAndRewrite::SplitMatchAndRewrite;
 
   FailureOr<Value> getValueNonReshapeOpNonBroadcast(Value val) const {
@@ -1489,9 +1490,13 @@ void tosa::populateTosaToRockConversionPatterns(MLIRContext *context,
       context);
 }
 
+void tosa::populateTosaToRockAttentionConversionPatterns(
+    MLIRContext *context, RewritePatternSet &patterns) {
+  patterns.add<AttentionRewritePattern>(context);
+}
+
 void tosa::populateTosaToRockTensorConversionPatterns(
     MLIRContext *context, RewritePatternSet &patterns) {
-  patterns.add<AttentionRewritePattern, TransposeRewritePattern,
-               CollapseExpandRewritePattern, AddSplatZeroRewritePattern>(
-      context);
+  patterns.add<TransposeRewritePattern, CollapseExpandRewritePattern,
+               AddSplatZeroRewritePattern>(context);
 }

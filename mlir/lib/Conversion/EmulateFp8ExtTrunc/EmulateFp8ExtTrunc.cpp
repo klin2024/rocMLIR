@@ -48,7 +48,8 @@ struct EmulateFp8ExtTruncPass final
   void runOnOperation() override;
 };
 
-struct Fp8ExtToTableLookupPattern final : public OpConversionPattern<ExtFOp>::SplitMatchAndRewrite {
+struct Fp8ExtToTableLookupPattern final
+    : public OpConversionPattern<ExtFOp>::SplitMatchAndRewrite {
   using SplitMatchAndRewrite::SplitMatchAndRewrite;
 
   bool hasF8ConversionInstrs = false;
@@ -63,7 +64,8 @@ struct Fp8ExtToTableLookupPattern final : public OpConversionPattern<ExtFOp>::Sp
                ConversionPatternRewriter &rewriter) const override;
 };
 
-struct Fp8TruncToCallPattern final : public OpConversionPattern<TruncFOp>::SplitMatchAndRewrite {
+struct Fp8TruncToCallPattern final
+    : public OpConversionPattern<TruncFOp>::SplitMatchAndRewrite {
   using SplitMatchAndRewrite::SplitMatchAndRewrite;
 
   FlatSymbolRefAttr f8E4M3FNUZFunc;
