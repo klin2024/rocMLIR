@@ -1508,7 +1508,7 @@ Speculation::Speculatability LvlOp::getSpeculatability() {
   if (!constantIndex)
     return Speculation::NotSpeculatable;
 
-  assert(static_cast<int64_t>(*constantIndex) <
+  assert(constantIndex <
          cast<RankedTensorType>(getSource().getType()).getRank());
   return Speculation::Speculatable;
 }

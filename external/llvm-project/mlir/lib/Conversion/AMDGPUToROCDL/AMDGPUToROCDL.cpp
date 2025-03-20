@@ -468,6 +468,7 @@ struct LDSBarrierOpLowering : public ConvertOpToLLVMPattern<LDSBarrierOp> {
       rewriter.create<ROCDL::BarrierSignalOp>(loc, -1);
       rewriter.replaceOpWithNewOp<ROCDL::BarrierWaitOp>(op, -1);
     }
+
     return success();
   }
 };

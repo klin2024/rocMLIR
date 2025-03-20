@@ -42,6 +42,8 @@ struct ArithToAMDGPUConversionPass final
 };
 
 struct ExtFOnFloat8RewritePattern final : OpRewritePattern<arith::ExtFOp> {
+  using OpRewritePattern::OpRewritePattern;
+
   Chipset chipset;
   ExtFOnFloat8RewritePattern(MLIRContext *ctx, Chipset chipset)
       : OpRewritePattern::OpRewritePattern(ctx), chipset(chipset) {}

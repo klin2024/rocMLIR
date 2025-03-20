@@ -2632,18 +2632,14 @@ LogicalResult Conv2DOp::verify() {
   //   if (failed(verifyOutputSize(
   //           inputType.getDimSize(1), weightType.getDimSize(1),
   //           outputType.getDimSize(1), padding[0], padding[1], strides[0],
-  //           dilations[0], "height", "y", "top", "bottom"))) {
-  //     llvm::errs() << "____FAILED1\n";
+  //           dilations[0], "height", "y", "top", "bottom")))
   //     return failure();
-  //   }
 
   //   if (failed(verifyOutputSize(
   //           inputType.getDimSize(2), weightType.getDimSize(2),
   //           outputType.getDimSize(2), padding[2], padding[3], strides[1],
-  //           dilations[1], "width", "x", "left", "right"))) {
-  //     llvm::errs() << "____FAILED1\n";
+  //           dilations[1], "width", "x", "left", "right")))
   //     return failure();
-  //   }
   // }
 
   const RankedTensorType biasType =
