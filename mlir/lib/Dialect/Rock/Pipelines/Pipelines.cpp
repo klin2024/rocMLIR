@@ -127,17 +127,10 @@ void rock::buildBufferizePipeline(OpPassManager &pm,
   bufferization::OneShotBufferizePassOptions bufOpts;
   bufOpts.allowReturnAllocsFromLoops = true;
   bufOpts.bufferizeFunctionBoundaries = true;
-  bufOpts.functionBoundaryTypeConversion = "infer-layout-map";
-  // TODO: do we need this?
-  // bufOpts.unknownTypeConverterFn =
-  //     [](Value value, Attribute memorySpace,
-  //        const bufferization::BufferizationOptions &options) {
-  //       return bufferization::getMemRefTypeWithStaticIdentityLayout(
-  //           cast<TensorType>(value.getType()), memorySpace);
-  //     };
-  // bufferization::BufferizationOptions::LayoutMapOption::IdentityLayoutMap;
+  bufOpts.functionBoundaryTypeConversion = "identity-layout-map";
+  bufOpts.unknownTypeConversion = "identity-layout-map";
+  
   pm.addPass(bufferization::createOneShotBufferizePass(bufOpts));
-
   pm.addPass(bufferization::createBufferResultsToOutParamsPass());
 
   // Sort dimensions according to the underlying memory layout strides

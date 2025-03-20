@@ -2870,8 +2870,12 @@ static func::FuncOp createCpuAttentionKernelWithMlir(ModuleOp module,
   if (isQuantized) {
     firstGemmOutElemType = IntegerType::get(ctx, 32);
   }
+  auto queriesZp =
+      tosa::createZeroPointTensor(builder, loc, queriesTensor.getType(), 0).value();
+  auto keysZp =
+      tosa::createZeroPointTensor(builder, loc, keysTensor.getType(), 0).value();
   Value qkTensor = createOpAndInfer<tosa::MatMulOp>(
-      builder, loc, firstGemmOutElemType, queriesTensor, keysTensor);
+      builder, loc, firstGemmOutElemType, queriesTensor, keysTensor, queriesZp, keysZp);
 
   // get currentSeqLenTensor
   Value currentSeqLenTensor;
@@ -2978,8 +2982,12 @@ static func::FuncOp createCpuAttentionKernelWithMlir(ModuleOp module,
 #endif
   auto resultOutElementType =
       cast<ShapedType>(softmaxTensor.getType()).getElementType();
+  auto softmaxZp =
+      tosa::createZeroPointTensor(builder, loc, softmaxTensor.getType(), 0).value();
+  auto valuesZp =
+      tosa::createZeroPointTensor(builder, loc, valuesTensor.getType(), 0).value();
   Value resultTensor = createOpAndInfer<tosa::MatMulOp>(
-      builder, loc, resultOutElementType, softmaxTensor, valuesTensor);
+      builder, loc, resultOutElementType, softmaxTensor, valuesTensor, softmaxZp, valuesZp);
 
   if (transposeO) {
     resultTensor = transposeMatrix(builder, loc, resultTensor, {0, 2, 1});

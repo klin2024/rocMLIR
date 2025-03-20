@@ -63,7 +63,7 @@ static bool isConstantZero(Value v) {
   if (auto cst = v.getDefiningOp<arith::ConstantOp>())
     return isZeroAttribute(cst.getValue());
   if (auto cst = v.getDefiningOp<tosa::ConstOp>())
-    return isZeroAttribute(cst->getAttr("value"));
+    return isZeroAttribute(cst.getValuesAttr());
   return false;
 }
 
@@ -97,7 +97,7 @@ static bool isConstIsNegInf(Value v) {
   if (auto cst = v.getDefiningOp<arith::ConstantOp>())
     return isNegInfAttribute(cst.getValue());
   if (auto cst = v.getDefiningOp<tosa::ConstOp>())
-    return isNegInfAttribute(cst->getAttr("value"));
+    return isNegInfAttribute(cst.getValuesAttr());
   return false;
 }
 
@@ -143,7 +143,7 @@ bool isConstRange(Value v) {
   if (auto cst = v.getDefiningOp<arith::ConstantOp>())
     return isConstRangeAttribute(cst.getValue());
   if (auto cst = v.getDefiningOp<tosa::ConstOp>())
-    return isConstRangeAttribute(cst->getAttr("value"));
+    return isConstRangeAttribute(cst.getValuesAttr());
   return false;
 }
 
