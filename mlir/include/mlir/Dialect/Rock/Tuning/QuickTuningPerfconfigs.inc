@@ -89,7 +89,6 @@ const InitParamsAccel PopulateParamsXDL::initParametersGemm[PopulateParamsXDL::n
 // BEGIN_CONV_XDL_f32_DEFS
 const InitParamsAccel PopulateParamsXDL::initParametersConv[PopulateParamsXDL::nInitParametersConv] = {
     {128,128,4,128,16,4,1,1,2,true,true},
-    {128,64,4,128,16,4,1,1,2,true,true},
     {128,128,8,64,16,1,1,1,2,true,true},
     {64,128,4,64,16,4,1,1,2,true,true},
     {64,64,8,32,16,4,1,1,2,true,true},
@@ -305,7 +304,7 @@ static const InitParamsAccel initParametersGemm[nInitParametersGemm];
 // END_GEMM_XDL_f32_DECS
 
 // BEGIN_CONV_XDL_f32_DECS
-static constexpr size_t nInitParametersConv = 30;
+static constexpr size_t nInitParametersConv = 29;
 static const InitParamsAccel initParametersConv[nInitParametersConv];
 // END_CONV_XDL_f32_DECS
 
