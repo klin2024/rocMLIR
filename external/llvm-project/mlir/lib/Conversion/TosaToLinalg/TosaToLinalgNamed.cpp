@@ -355,7 +355,7 @@ public:
 
     auto weightShape = weightTy.getShape();
     auto resultShape = resultTy.getShape();
-    auto newResultTy = resultTy;
+    auto newResultTy = RankedTensorType::get(resultShape, accETy);
 
     if (isConv2DOp && group > 1) {
       // Map 4D-tensors to 5D tensors
@@ -433,7 +433,7 @@ public:
       SmallVector<int64_t, 5> newResultShape{resultShape[0], resultShape[1],
                                              resultShape[2], group,
                                              resultShape[3] / group};
-      newResultTy = RankedTensorType::get(newResultShape, resultETy);
+      newResultTy = RankedTensorType::get(newResultShape, accETy);
     }
 
     // Extract the attributes for convolution.
@@ -454,7 +454,7 @@ public:
       auto newResultTyValue =
           getTosaConstShape(rewriter, op.getLoc(), newResultTy.getShape());
       broadcastBias = rewriter.create<tosa::ReshapeOp>(
-          loc, RankedTensorType::get(newResultTy.getShape(), resultETy),
+          loc, RankedTensorType::get(newResultTy.getShape(), accETy),
           broadcastBias, newResultTyValue);
     }
 
@@ -484,7 +484,7 @@ public:
       auto resultShapeValue =
           getTosaConstShape(rewriter, op.getLoc(), resultShape);
       conv = rewriter.create<tosa::ReshapeOp>(
-          loc, RankedTensorType::get(resultShape, resultETy), conv,
+          loc, RankedTensorType::get(resultShape, accETy), conv,
           resultShapeValue);
     }
 

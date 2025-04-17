@@ -155,6 +155,8 @@ def Tosa_Conv2DOp : Tosa_ConvOp<"conv2d"> {
   }];
 
   let builders = [Tosa_ConvOpQuantInfoBuilder, Tosa_ConvOpGroupQuantBuilder];
+  
+  let hasCanonicalizer = 1;
   let hasVerifier = 1;
 }
 
