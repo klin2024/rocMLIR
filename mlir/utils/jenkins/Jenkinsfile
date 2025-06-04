@@ -782,6 +782,9 @@ pipeline {
                     unsuccessful {
                         rebootNode()
                     }
+                    always {
+                        cleanWs()
+                    }
                 }
             }
         }
@@ -872,6 +875,9 @@ pipeline {
                 post {
                     unsuccessful {
                         rebootNode()
+                    }
+                    always {
+                        cleanWs()
                     }
                 }
             }
@@ -1044,6 +1050,11 @@ pipeline {
                         }
                     }
                 }
+                post {
+                    always {
+                        cleanWs()
+                    }
+                }
             }
         }
         stage("Archive weekly tuning perfDB") {
@@ -1062,6 +1073,11 @@ pipeline {
             }
             steps {
                 archivePerfDB()
+            }
+            post {
+                always {
+                    cleanWs()
+                }
             }
         }
         // FIXME: run perf tests on both gfx90a and gfx908
@@ -1390,6 +1406,9 @@ pipeline {
                     unsuccessful {
                         rebootNode()
                     }
+                    always {
+                        cleanWs()
+                    }
                 }
             }
         }
@@ -1532,6 +1551,9 @@ pipeline {
                     unsuccessful {
                         rebootNode()
                     }
+                    always {
+                        cleanWs()
+                    }
                 }
             }
         }
@@ -1621,6 +1643,11 @@ pipeline {
                                 }
                             }
                         }
+                    }
+                }
+                post {
+                    always {
+                        cleanWs()
                     }
                 }
             }
