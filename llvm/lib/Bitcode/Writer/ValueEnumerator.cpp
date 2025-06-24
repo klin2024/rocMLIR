@@ -230,6 +230,9 @@ static void predictValueUseListOrderImpl(const Value *V, const Function *F,
 
 static void predictValueUseListOrder(const Value *V, const Function *F,
                                      OrderMap &OM, UseListOrderStack &Stack) {
+  if (!V->hasUseList())
+    return;
+
   auto &IDPair = OM[V];
   assert(IDPair.first && "Unmapped value");
   if (IDPair.second)
@@ -482,8 +485,8 @@ ValueEnumerator::ValueEnumerator(const Module &M,
         // Enumerate metadata attached with this instruction.
         MDs.clear();
         I.getAllMetadataOtherThanDebugLoc(MDs);
-        for (unsigned i = 0, e = MDs.size(); i != e; ++i)
-          EnumerateMetadata(&F, MDs[i].second);
+        for (const auto &MD : MDs)
+          EnumerateMetadata(&F, MD.second);
 
         // Don't enumerate the location directly -- it has a special record
         // type -- but enumerate its operands.
@@ -1161,11 +1164,10 @@ void ValueEnumerator::incorporateFunction(const Function &F) {
         assert(DVR.getRawLocation() &&
                "DbgVariableRecord location unexpectedly null");
         AddFnLocalMetadata(DVR.getRawLocation());
-         if (DVR.isDbgAssign()) {
+        if (DVR.isDbgAssign()) {
           assert(DVR.getRawAddress() &&
                  "DbgVariableRecord location unexpectedly null");
           AddFnLocalMetadata(DVR.getRawAddress());
-
         }
       }
       if (!I.getType()->isVoidTy())
