@@ -1361,8 +1361,8 @@ static func::FuncOp createGPUWrapper(ModuleOp module,
   // Emit device selection
   if (deviceNum.getNumOccurrences() > 0)
     b.create<gpu::SetDefaultDeviceOp>(
-        loc, b.create<arith::ConstantIntOp>(loc, deviceNum.getValue(),
-                                            b.getIntegerType(32)));
+        loc, b.create<arith::ConstantIntOp>(loc, b.getIntegerType(32),
+                                            deviceNum.getValue()));
 
   SmallVector<Value, 4> cpuMem;
   SmallVector<Value, 4> gpuMem;
@@ -1569,7 +1569,7 @@ static LogicalResult populateRandomTensorFillLogic(OpBuilder &b, Location loc,
     if (i16vals.find(v) == i16vals.end()) {
       auto i16Type = b.getIntegerType(16);
       i16vals.try_emplace(
-          v, b.createOrFold<arith::ConstantIntOp>(loc, v, i16Type));
+          v, b.createOrFold<arith::ConstantIntOp>(loc, i16Type, v));
     }
     return i16vals[v];
   };
@@ -3924,7 +3924,7 @@ static func::FuncOp createVerifierFunc(ModuleOp module, const KernelIF &kernel,
 
   auto getF32Val = [&](float val) -> Value {
     llvm::APFloat apVal(val);
-    return b.create<arith::ConstantFloatOp>(loc, apVal, floatType);
+    return b.create<arith::ConstantFloatOp>(loc, floatType, apVal);
   };
   // Thresholds for different metrics
   // RMS: 0.00003f for all data types
@@ -4386,7 +4386,7 @@ static LogicalResult populateHostHarnessLogic(
   if (isRandom) {
     auto seedFunc = makeFuncDecl(module, "seedRandomValues", {b.getI32Type()});
     int seed = getRandomSeed();
-    Value seedConst = b.create<arith::ConstantIntOp>(loc, seed, b.getI32Type());
+    Value seedConst = b.create<arith::ConstantIntOp>(loc, b.getI32Type(), seed);
     b.create<func::CallOp>(loc, seedFunc, seedConst);
   }
 
@@ -4458,7 +4458,7 @@ static LogicalResult populateHostHarnessLogic(
       for (auto pair : llvm::enumerate(currentSeqLen)) {
         Value index = b.create<arith::ConstantIndexOp>(loc, pair.index());
         Value value =
-            b.create<arith::ConstantIntOp>(loc, pair.value(), b.getI32Type());
+            b.create<arith::ConstantIntOp>(loc, b.getI32Type(), pair.value());
         b.create<memref::StoreOp>(loc, value, lvar, ValueRange{index});
       }
     } else if (!isRandom) {
