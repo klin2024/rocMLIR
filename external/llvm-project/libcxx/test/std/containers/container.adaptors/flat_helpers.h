@@ -33,13 +33,6 @@ struct SillyReserveVector : std::vector<T> {
   void reserve(size_t) { this->clear(); }
 };
 
-template <class T>
-struct SillyReserveVector : std::vector<T> {
-  using std::vector<T>::vector;
-
-  void reserve(size_t) { this->clear(); }
-};
-
 template <class T, bool ConvertibleToT = false>
 struct Transparent {
   T t;

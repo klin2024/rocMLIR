@@ -2125,9 +2125,6 @@ void AMDGPUCodeGenPassBuilder::addCodeGenPrepare(AddIRPass &addPass) const {
   if (TM.getOptLevel() > CodeGenOptLevel::None)
     addPass(AMDGPUPreloadKernelArgumentsPass(TM));
 
-  if (TM.getOptLevel() > CodeGenOptLevel::None)
-    addPass(AMDGPUPreloadKernelArgumentsPass(TM));
-
   if (EnableLowerKernelArguments)
     addPass(AMDGPULowerKernelArgumentsPass(TM));
 

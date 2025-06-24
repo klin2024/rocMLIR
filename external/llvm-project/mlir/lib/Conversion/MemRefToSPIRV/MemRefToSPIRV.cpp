@@ -947,20 +947,6 @@ LogicalResult ExtractAlignedPointerAsIndexOpPattern::matchAndRewrite(
 }
 
 //===----------------------------------------------------------------------===//
-// ExtractAlignedPointerAsIndexOp
-//===----------------------------------------------------------------------===//
-
-LogicalResult ExtractAlignedPointerAsIndexOpPattern::matchAndRewrite(
-    memref::ExtractAlignedPointerAsIndexOp extractOp, OpAdaptor adaptor,
-    ConversionPatternRewriter &rewriter) const {
-  auto &typeConverter = *getTypeConverter<SPIRVTypeConverter>();
-  Type indexType = typeConverter.getIndexType();
-  rewriter.replaceOpWithNewOp<spirv::ConvertPtrToUOp>(extractOp, indexType,
-                                                      adaptor.getSource());
-  return success();
-}
-
-//===----------------------------------------------------------------------===//
 // Pattern population
 //===----------------------------------------------------------------------===//
 

@@ -239,12 +239,7 @@ static StringRef realPathIfDifferent(StringRef path) {
 
 DylibFile *macho::loadDylib(MemoryBufferRef mbref, DylibFile *umbrella,
                             bool isBundleLoader, bool explicitlyLinked) {
-  // Frameworks can be found from different symlink paths, so resolve
-  // symlinks before looking up in the dylib cache.
-  SmallString<128> realPath;
-  std::error_code err = fs::real_path(mbref.getBufferIdentifier(), realPath);
-  CachedHashStringRef path(!err ? uniqueSaver().save(StringRef(realPath))
-                                : mbref.getBufferIdentifier());
+  CachedHashStringRef path(mbref.getBufferIdentifier());
   DylibFile *&file = loadedDylibs[path];
   if (file) {
     if (explicitlyLinked)

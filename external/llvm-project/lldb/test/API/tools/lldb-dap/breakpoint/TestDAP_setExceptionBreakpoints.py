@@ -7,7 +7,6 @@ from lldbsuite.test.lldbtest import *
 import lldbdap_testcase
 
 
-@skip("Temporarily disable the breakpoint tests")
 class TestDAP_setExceptionBreakpoints(lldbdap_testcase.DAPTestCaseBase):
     @skipIfWindows
     def test_functionality(self):

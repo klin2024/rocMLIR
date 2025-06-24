@@ -33,12 +33,4 @@ std::error_code NotStoppedError::convertToErrorCode() const {
   return llvm::inconvertibleErrorCode();
 }
 
-char NotStoppedError::ID;
-
-void NotStoppedError::log(llvm::raw_ostream &OS) const { OS << "not stopped"; }
-
-std::error_code NotStoppedError::convertToErrorCode() const {
-  return llvm::inconvertibleErrorCode();
-}
-
 } // namespace lldb_dap
