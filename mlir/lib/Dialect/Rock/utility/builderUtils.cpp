@@ -209,7 +209,7 @@ Value getAsTensor(OpBuilder &builder, Location loc, mlir::Value value,
                   bool isWritable) {
   constexpr bool isRestrict{true};
   Value origTensor = builder.create<bufferization::ToTensorOp>(
-      loc, value, isRestrict, isWritable);
+      loc, value.getType(), value, isRestrict, isWritable);
   return origTensor;
 }
 

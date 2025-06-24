@@ -3280,7 +3280,8 @@ createCpuConvElementwiseGemmKernelWithMlir(ModuleOp module,
                                           bool isWritable = false) {
     constexpr bool isRestrict{true};
     Value flatTensor = builder.create<bufferization::ToTensorOp>(
-        loc, block->getArgument(blockArgIndex), isRestrict, isWritable);
+        loc, block->getArgument(blockArgIndex).getType(),
+        block->getArgument(blockArgIndex), isRestrict, isWritable);
     ArrayRef<int64_t> origShape =
         cast<ShapedType>(argTypes[blockArgIndex]).getShape();
 
@@ -3459,7 +3460,8 @@ createCpuGemmElementwiseGemmKernelWithMlir(ModuleOp module,
                                           bool isWritable = false) {
     constexpr bool isRestrict{true};
     Value flatTensor = builder.create<bufferization::ToTensorOp>(
-        loc, block->getArgument(blockArgIndex), isRestrict, isWritable);
+        loc, block->getArgument(blockArgIndex).getType(),
+        block->getArgument(blockArgIndex), isRestrict, isWritable);
     ArrayRef<int64_t> origShape =
         cast<ShapedType>(argTypes[blockArgIndex]).getShape();
 
@@ -3574,7 +3576,8 @@ static func::FuncOp createCpuAttentionKernelWithMlir(ModuleOp module,
                                           bool isWritable = false) {
     constexpr bool isRestrict{true};
     Value flatTensor = builder.create<bufferization::ToTensorOp>(
-        loc, block->getArgument(blockArgIndex), isRestrict, isWritable);
+        loc, block->getArgument(blockArgIndex).getType(),
+        block->getArgument(blockArgIndex), isRestrict, isWritable);
     ArrayRef<int64_t> origShape =
         cast<ShapedType>(argTypes[blockArgIndex]).getShape();
 
@@ -3935,7 +3938,7 @@ static func::FuncOp createVerifierFunc(ModuleOp module, const KernelIF &kernel,
   char printDebug = static_cast<char>(printVerifyResults.getValue());
 
   auto printDebugVal =
-      b.create<arith::ConstantIntOp>(loc, printDebug, charType);
+      b.create<arith::ConstantIntOp>(loc, charType, printDebug);
 
   // obtain function name of the verifier wrapper
   std::string verifyFuncName = "mcpuVerify";

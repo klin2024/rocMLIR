@@ -916,7 +916,7 @@ static Value getConstIntOrIndexValue(OpBuilder &b, Location loc, int64_t value,
   if (isa<IndexType>(type)) {
     return b.create<ConstantIndexOp>(loc, value);
   }
-  return b.create<ConstantIntOp>(loc, value, type);
+  return b.create<ConstantIntOp>(loc, type, value);
 }
 
 // Manually flatten a set of coordinates into a single address
