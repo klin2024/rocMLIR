@@ -928,7 +928,21 @@ LogicalResult ReinterpretCastPattern::matchAndRewrite(
   }();
 
   rewriter.replaceOpWithNewOp<spirv::InBoundsPtrAccessChainOp>(
-      op, src, offsetValue, std::nullopt);
+      op, src, offsetValue, ValueRange());
+  return success();
+}
+
+//===----------------------------------------------------------------------===//
+// ExtractAlignedPointerAsIndexOp
+//===----------------------------------------------------------------------===//
+
+LogicalResult ExtractAlignedPointerAsIndexOpPattern::matchAndRewrite(
+    memref::ExtractAlignedPointerAsIndexOp extractOp, OpAdaptor adaptor,
+    ConversionPatternRewriter &rewriter) const {
+  auto &typeConverter = *getTypeConverter<SPIRVTypeConverter>();
+  Type indexType = typeConverter.getIndexType();
+  rewriter.replaceOpWithNewOp<spirv::ConvertPtrToUOp>(extractOp, indexType,
+                                                      adaptor.getSource());
   return success();
 }
 

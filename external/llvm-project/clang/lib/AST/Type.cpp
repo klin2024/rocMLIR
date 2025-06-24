@@ -3981,10 +3981,34 @@ CountAttributedType::CountAttributedType(
   CountAttributedTypeBits.NumCoupledDecls = CoupledDecls.size();
   CountAttributedTypeBits.CountInBytes = CountInBytes;
   CountAttributedTypeBits.OrNull = OrNull;
-  auto *DeclSlot = getTrailingObjects<TypeCoupledDeclRefInfo>();
+  auto *DeclSlot = getTrailingObjects();
+  llvm::copy(CoupledDecls, DeclSlot);
   Decls = llvm::ArrayRef(DeclSlot, CoupledDecls.size());
-  for (unsigned i = 0; i != CoupledDecls.size(); ++i)
-    DeclSlot[i] = CoupledDecls[i];
+}
+
+StringRef CountAttributedType::getAttributeName(bool WithMacroPrefix) const {
+// TODO: This method isn't really ideal because it doesn't return the spelling
+// of the attribute that was used in the user's code. This method is used for
+// diagnostics so the fact it doesn't use the spelling of the attribute in
+// the user's code could be confusing (#113585).
+#define ENUMERATE_ATTRS(PREFIX)                                                \
+  do {                                                                         \
+    if (isCountInBytes()) {                                                    \
+      if (isOrNull())                                                          \
+        return PREFIX "sized_by_or_null";                                      \
+      return PREFIX "sized_by";                                                \
+    }                                                                          \
+    if (isOrNull())                                                            \
+      return PREFIX "counted_by_or_null";                                      \
+    return PREFIX "counted_by";                                                \
+  } while (0)
+
+  if (WithMacroPrefix)
+    ENUMERATE_ATTRS("__");
+  else
+    ENUMERATE_ATTRS("");
+
+#undef ENUMERATE_ATTRS
 }
 
 StringRef CountAttributedType::getAttributeName(bool WithMacroPrefix) const {
