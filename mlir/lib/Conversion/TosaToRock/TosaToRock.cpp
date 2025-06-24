@@ -1715,8 +1715,8 @@ struct AttentionRewritePattern : public OpRewritePattern<tosa::MatMulOp> {
       RankedTensorType resTensorType = cast<RankedTensorType>(res.getType());
       MemRefType resMemRefType = MemRefType::get(
           resTensorType.getShape(), resTensorType.getElementType());
-      Value resMemref =
-          rewriter.create<bufferization::ToBufferOp>(loc, cast<bufferization::BufferLikeType>(resMemRefType), res);
+      Value resMemref = rewriter.create<bufferization::ToBufferOp>(
+          loc, cast<bufferization::BufferLikeType>(resMemRefType), res);
       Value outMemref =
           preSoftmaxElemwiseBlock->addArgument(resMemRefType, loc);
       rewriter.create<memref::CopyOp>(loc, resMemref, outMemref);

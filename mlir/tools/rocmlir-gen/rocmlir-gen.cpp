@@ -3284,7 +3284,9 @@ createCpuConvElementwiseGemmKernelWithMlir(ModuleOp module,
                                           bool isWritable = false) {
     constexpr bool isRestrict{true};
     Value flatTensor = builder.create<bufferization::ToTensorOp>(
-        loc, memref::getTensorTypeFromMemRefType(block->getArgument(blockArgIndex).getType()),
+        loc,
+        memref::getTensorTypeFromMemRefType(
+            block->getArgument(blockArgIndex).getType()),
         block->getArgument(blockArgIndex), isRestrict, isWritable);
     ArrayRef<int64_t> origShape =
         cast<ShapedType>(argTypes[blockArgIndex]).getShape();
@@ -3464,7 +3466,9 @@ createCpuGemmElementwiseGemmKernelWithMlir(ModuleOp module,
                                           bool isWritable = false) {
     constexpr bool isRestrict{true};
     Value flatTensor = builder.create<bufferization::ToTensorOp>(
-        loc, memref::getTensorTypeFromMemRefType(block->getArgument(blockArgIndex).getType()),
+        loc,
+        memref::getTensorTypeFromMemRefType(
+            block->getArgument(blockArgIndex).getType()),
         block->getArgument(blockArgIndex), isRestrict, isWritable);
     ArrayRef<int64_t> origShape =
         cast<ShapedType>(argTypes[blockArgIndex]).getShape();
@@ -3580,7 +3584,9 @@ static func::FuncOp createCpuAttentionKernelWithMlir(ModuleOp module,
                                           bool isWritable = false) {
     constexpr bool isRestrict{true};
     Value flatTensor = builder.create<bufferization::ToTensorOp>(
-        loc, memref::getTensorTypeFromMemRefType(block->getArgument(blockArgIndex).getType()),
+        loc,
+        memref::getTensorTypeFromMemRefType(
+            block->getArgument(blockArgIndex).getType()),
         block->getArgument(blockArgIndex), isRestrict, isWritable);
     ArrayRef<int64_t> origShape =
         cast<ShapedType>(argTypes[blockArgIndex]).getShape();
