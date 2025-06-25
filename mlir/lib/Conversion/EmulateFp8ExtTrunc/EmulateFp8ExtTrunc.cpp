@@ -366,7 +366,7 @@ static FlatSymbolRefAttr makeFp8TruncFunction(Location loc, FloatType outType,
   Value cmp57 = b.create<CmpIOp>(CmpIPredicate::ne, sub43, i32Const(0));
   Value and58 = b.create<AndIOp>(add56, i32Const(1 << 23));
   Value tobool59Not = b.create<CmpIOp>(CmpIPredicate::eq, and58, i32Const(0));
-  Value trueConst = b.create<ConstantIntOp>(true, /*width=*/1);
+  Value trueConst = b.create<ConstantIntOp>(b.getI1Type(), true);
   Value brCond133 = b.create<SelectOp>(cmp57, trueConst, tobool59Not);
 
   Block *ifElse61 = func.addBlock();
@@ -402,7 +402,7 @@ static FlatSymbolRefAttr makeFp8TruncFunction(Location loc, FloatType outType,
   Value cmp72 = b.create<CmpIOp>(CmpIPredicate::eq, f8Exponent0, i32Const(0));
   Value cmp74 = b.create<CmpIOp>(CmpIPredicate::ult, mantissa1,
                                  i32Const(1 << (16 + eBits)));
-  Value falseConst = b.create<ConstantIntOp>(false, /*width=*/1);
+  Value falseConst = b.create<ConstantIntOp>(b.getI1Type(), false);
   Value brCond = b.create<SelectOp>(cmp72, cmp74, falseConst);
   b.create<cf::CondBranchOp>(brCond, ret, ValueRange{outZero}, ifEnd76,
                              ValueRange{f8Exponent0, mantissa1});

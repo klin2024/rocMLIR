@@ -525,7 +525,7 @@ def main() -> bool:
             print(f"""Unknown arch {arch}""", file=sys.stderr)
 
     options = Options(debug=args.debug, quiet=args.quiet,
-        arch=arch, flags=rocmlir_gen_flags, concurrent_tests=args.jobs, numCU=getNumCU(getChip()))
+        arch=arch, flags=rocmlir_gen_flags, concurrent_tests=args.jobs, numCu=getNumCU(getChip()))
     paths = perfRunner.create_paths(None, args.mlir_build_dir)
 
     config = args.config
