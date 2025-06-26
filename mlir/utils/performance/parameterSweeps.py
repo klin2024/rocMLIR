@@ -21,7 +21,10 @@ from dataclasses import dataclass
 from typing import Callable, Iterable, List, Sequence, Optional, Tuple, TypeVar, Union
 
 import perfRunner
-from perfRunner import Paths, ConvConfiguration, getArch, getNumCU, getChip
+from perfRunner import ConvConfiguration
+from perfRunner import Paths
+from perfRunner import getArch
+from perfRunner import getNumCU
 from perfCommonUtils import CORRECT_RESULT_RE
 
 @dataclass(frozen=True)
@@ -525,7 +528,8 @@ def main() -> bool:
             print(f"""Unknown arch {arch}""", file=sys.stderr)
 
     options = Options(debug=args.debug, quiet=args.quiet,
-        arch=arch, flags=rocmlir_gen_flags, concurrent_tests=args.jobs, numCu=getNumCU(getChip()))
+        arch=arch, flags=rocmlir_gen_flags, concurrent_tests=args.jobs, numCu=getNumCU(perfRunner.getChip()))
+
     paths = perfRunner.create_paths(None, args.mlir_build_dir)
 
     config = args.config
