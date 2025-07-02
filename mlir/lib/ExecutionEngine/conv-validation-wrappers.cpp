@@ -148,7 +148,8 @@ void mcpuVerify(T *gpuResults, T *validationResults, long long dataSize,
     gpuNum = static_cast<float>(gpuResults[i]);
     // Update the max magnitude value
     float maxNum = std::max(fabs(valNum), fabs(gpuNum));
-    maxMag = std::max(maxMag, maxNum);
+    if (std::fpclassify(valNum) != FP_SUBNORMAL)
+      maxMag = std::max(maxMag, maxNum);
 
     // If cpu value is a denorm, we skip checks.
     // We need this because we only preserve sign in denorm fp (GPU).
