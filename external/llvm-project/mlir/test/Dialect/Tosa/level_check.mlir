@@ -480,6 +480,14 @@ func.func @test_const_ui32(%arg0 : tensor<1xui32>) {
 
 // -----
 
+func.func @test_const_f64(%arg0 : tensor<1xf64>) {
+  // expected-error@+1 {{'tosa.const' op is not profile-aligned: element type 'f64' is not legal}}
+  %0 = "tosa.const"() {values = dense<0.0> : tensor<1xf64>} : () -> tensor<1xf64>
+  return
+}
+
+// -----
+
 func.func @test_const_ui8(%arg0 : tensor<1xui8>) {
   // expected-error@+1 {{'tosa.const' op is not profile-aligned: element type 'ui8' is not legal}}
   %0 = "tosa.const"() {values = dense<0> : tensor<1xui8>} : () -> tensor<1xui8>
